@@ -39,6 +39,11 @@ HALKODE_BASE_URL=
 php artisan optimize
 ```
 
+- Publish the assets using the command below
+```
+php artisan vendor:publish --tag=halkode-assets
+```
+
 ## Installation without composer:
 
 - To ensure that your custom shipping method package is properly integrated into the Bagisto application, you need to register your service provider. This can be done by adding it to the `bootstrap/providers.php` file in the Bagisto root directory.
@@ -67,8 +72,14 @@ HALKODE_APP_SECRET=
 HALKODE_BASE_URL=
 ```
 
+- Run these commands below to complete the setup
 ```
 php artisan optimize
+```
+
+- Publish the assets using the command below
+```
+php artisan vendor:publish --tag=halkode-assets
 ```
 
 > That's it, now just execute the project on your specified domain.
