@@ -94,11 +94,7 @@ class PaymentController extends Controller
             ->post(env('HALKODE_BASE_URL'), $payload);
 
         if ($response->failed()) {
-            return response()->json([
-                'error'   => 'Halkode API request failed',
-                'status'  => $response->status(),
-                'message' => $response->body(),
-            ], $response->status());
+            return redirect()->route('halkode.cancel');
         }
 
         return $response->body();
@@ -107,8 +103,10 @@ class PaymentController extends Controller
     /**
      * Place an order and redirect to the success page.
      */
-    public function success()
+    public function success(Request $request)
     {
+        logger()->info(['Halk Öde payment successful.' => $request->query()]);
+
         $cart = Cart::getCart();
 
         $data = (new OrderResource($cart))->jsonSerialize();
@@ -129,8 +127,10 @@ class PaymentController extends Controller
     /**
      * Redirect to the cart page with error message.
      */
-    public function failure()
+    public function failure(Request $request)
     {
+        logger()->error(['Halk Öde payment failed or was cancelled.' => $request->query()]);
+
         session()->flash('error', 'Halk Öde payment was either cancelled or the transaction failed.');
 
         return redirect()->route('shop.checkout.cart.index');

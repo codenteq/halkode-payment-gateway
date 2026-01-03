@@ -11,9 +11,9 @@ Route::group(['middleware' => ['web']], function () {
      */
     Route::get('/halkode-redirect', [PaymentController::class, 'redirect'])->name('halkode.redirect');
 
-    Route::any('/halkode-success', [PaymentController::class, 'success'])->name('halkode.success');
+    Route::get('/halkode-success', [PaymentController::class, 'success'])->name('halkode.success');
 
-    Route::any('/halkode-cancel', [PaymentController::class, 'failure'])->name('halkode.cancel');
+    Route::get('/halkode-cancel', [PaymentController::class, 'failure'])->name('halkode.cancel');
 
     Route::post('/halkode-callback', [PaymentController::class, 'callback'])->name('halkode.callback')
         ->withoutMiddleware([VerifyCsrfToken::class]);
