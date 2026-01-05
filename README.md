@@ -21,28 +21,15 @@ Install this package now to receive secure payments in your online store. Halk �
 composer require codenteq/halkode-payment-gateway
 ```
 
-- Run these commands below to complete the setup
-```
-composer dump-autoload
-```
-
-> WARNING <br>
-> It will check existence of the .env file, if it exists then please update the file manually with the below details.
-```
-HALKODE_MERCHANT_KEY=
-HALKODE_APP_SECRET=
-HALKODE_BASE_URL=
-```
-
-- Run these commands below to complete the setup
-```
-php artisan optimize
-```
-
 - Publish the assets using the command below
 ```
 php artisan vendor:publish --tag=halkode-assets
 ```
+
+> WARNING <br>
+> Go to `/admin/configuration/sales/payment_methods`, find Halk Öde, and enter your Merchant Key and App Secret.
+
+> That's it, now just execute the project on your specified domain.
 
 ## Installation without composer:
 
@@ -64,23 +51,13 @@ Webkul\Halkode\Providers\HalkodeServiceProvider::class,
 composer dump-autoload
 ```
 
-> WARNING <br>
-> It will check existence of the .env file, if it exists then please update the file manually with the below details.
-```
-HALKODE_MERCHANT_KEY=
-HALKODE_APP_SECRET=
-HALKODE_BASE_URL=
-```
-
-- Run these commands below to complete the setup
-```
-php artisan optimize
-```
-
 - Publish the assets using the command below
 ```
 php artisan vendor:publish --tag=halkode-assets
 ```
+
+> WARNING <br>
+> Go to `/admin/configuration/sales/payment_methods`, find Halk Öde, and enter your Merchant Key and App Secret.
 
 > That's it, now just execute the project on your specified domain.
 
