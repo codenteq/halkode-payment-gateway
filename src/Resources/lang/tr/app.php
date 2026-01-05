@@ -13,6 +13,10 @@ return [
             'description'       => 'Açıklama',
             'image'             => 'Logo',
             'status'            => 'Durum',
+            'merchant_key'      => 'Üye İşyeri Anahtarı',
+            'merchant_key_info' => 'HalkÖde panosundan aldığınız Üye İşyeri Anahtarını girin',
+            'app_secret'        => 'Uygulama Parolası',
+            'app_secret_info'   => 'HalkÖde panosundan aldığınız Uygulama Parolasını girin',
         ],
     ],
 

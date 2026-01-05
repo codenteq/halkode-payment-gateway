@@ -5,6 +5,7 @@ namespace Webkul\Halkode\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Webkul\Checkout\Facades\Cart;
+use Webkul\Halkode\Payment\Halkode;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use Webkul\Sales\Transformers\OrderResource;
@@ -17,8 +18,9 @@ class PaymentController extends Controller
      * @return void
      */
     public function __construct(
-        protected OrderRepository   $orderRepository,
-        protected InvoiceRepository $invoiceRepository
+        protected OrderRepository $orderRepository,
+        protected InvoiceRepository $invoiceRepository,
+        protected Halkode $halkode
     ) {
         //
     }
@@ -43,28 +45,26 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         $cart = Cart::getCart();
+        $invoiceId = uniqid('HALKODE_');
 
-        $invoiceId = rand();
+        $items = $cart->items->map(fn($p) => [
+            'name'        => $p->name,
+            'price'       => round($p->total_incl_tax / $p->quantity, 2),
+            'quantity'    => $p->quantity,
+            'description' => $p->getTypeInstance()->isStockable() ? 'PHYSICAL_GOODS' : 'DIGITAL_GOODS',
+        ])->toArray();
 
-        $products = 0;
-        $halkodeItems = [];
-        foreach ($cart->items as $product) {
-            $halkodeItems[$products] = [
-                'name'        => $product->name,
-                'price'       => number_format($product->price, 2, '.', ''),
-                'quantity'    => $product->quantity,
-                'description' => $product->getTypeInstance()->isStockable() ? 'PHYSICAL_GOODS' : 'DIGITAL_GOODS',
-            ];
-            $products++;
-        }
-
-        if ($cart->shipping_amount > 0) {
-            $halkodeItems[] = [
-                'name'        => $cart->shipping_method,
-                'price'       => number_format($cart->shipping_amount, 2, '.', ''),
+        if ($cart->shipping_amount_incl_tax > 0) {
+            $items[] = [
+                'name'        => 'Shipping',
+                'price'       => round($cart->shipping_amount_incl_tax, 2),
                 'quantity'    => 1,
                 'description' => 'SERVICE',
             ];
+        }
+
+        if ($diff = round($cart->grand_total - collect($items)->sum(fn($i) => $i['price'] * $i['quantity']), 2)) {
+            $items[array_key_last($items)]['price'] = round($items[array_key_last($items)]['price'] + $diff, 2);
         }
 
         $payload = [
@@ -78,11 +78,11 @@ class PaymentController extends Controller
             "invoice_id"          => $invoiceId,
             "invoice_description" => "Grand total:" . $cart->grand_total,
             "total"               => number_format($cart->grand_total, 2, '.', ''),
-            "items"               => json_encode($halkodeItems),
+            "items"               => json_encode($items),
             "name"                => $cart['customer_first_name'],
             "surname"             => $cart['customer_last_name'],
-            "merchant_key"        => env('HALKODE_MERCHANT_KEY'),
-            "hash_key"            => $this->generateHash(number_format($cart->grand_total, 2, '.', ''), $request->installments_number, 'TRY', env('HALKODE_MERCHANT_KEY'), $invoiceId, env('HALKODE_APP_SECRET')),
+            "merchant_key"        => $this->halkode->getMerchantKey(),
+            "hash_key"            => $this->generateHash(number_format($cart->grand_total, 2, '.', ''), $request->installments_number, 'TRY', $this->halkode->getMerchantKey(), $invoiceId, $this->halkode->getAppSecret()),
             "return_url"          => route('halkode.success'),
             "cancel_url"          => route('halkode.cancel'),
         ];
@@ -91,7 +91,7 @@ class PaymentController extends Controller
             'Content-Type' => 'application/json',
         ])
             ->timeout(30)
-            ->post(env('HALKODE_BASE_URL'), $payload);
+            ->post($this->halkode->getPaymentUrl() . '/api/paySmart3D', $payload);
 
         if ($response->failed()) {
             return redirect()->route('halkode.cancel');
@@ -131,7 +131,7 @@ class PaymentController extends Controller
     {
         logger()->error(['Halk Öde payment failed or was cancelled.' => $request->query()]);
 
-        session()->flash('error', 'Halk Öde payment was either cancelled or the transaction failed.');
+        session()->flash('error', $request->query()['error']);
 
         return redirect()->route('shop.checkout.cart.index');
     }

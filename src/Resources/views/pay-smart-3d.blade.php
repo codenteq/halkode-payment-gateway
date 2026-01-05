@@ -4,9 +4,9 @@
 @endPush
 
 <x-shop::layouts
-    :has-header="false"
-    :has-feature="false"
-    :has-footer="false"
+        :has-header="false"
+        :has-feature="false"
+        :has-footer="false"
 >
     <x-slot:title>
         @lang('halkode::app.resources.title')
@@ -28,26 +28,26 @@
                 <div>
                     @if ($logo = core()->getCurrentChannel()->logo_url)
                         <img
-                            src="{{ $logo }}"
-                            alt="{{ config('app.name') }}"
-                            style="height: 40px; width: 110px;"
+                                src="{{ $logo }}"
+                                alt="{{ config('app.name') }}"
+                                style="height: 40px; width: 110px;"
                         />
                     @else
                         <img
-                            src="{{ bagisto_asset('images/logo.svg', 'shop') }}"
-                            alt="{{ config('app.name') }}"
-                            width="131"
-                            height="29"
-                            style="width: 156px;height: 40px;"
+                                src="{{ bagisto_asset('images/logo.svg', 'shop') }}"
+                                alt="{{ config('app.name') }}"
+                                width="131"
+                                height="29"
+                                style="width: 156px;height: 40px;"
                         />
                     @endif
                 </div>
             </div>
 
             <x-shop::form
-                method="POST"
-                :action="route('halkode.callback')"
-                class="space-y-4"
+                    method="POST"
+                    :action="route('halkode.callback')"
+                    class="space-y-4"
             >
                 @csrf
                 <input type="hidden" name="invoice_id" value="{{ $invoice_id }}">
@@ -55,12 +55,12 @@
 
                 <div class="mb-5">
                     <x-shop::form.control-group.control
-                        type="text"
-                        class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
-                        name="cc_holder_name"
-                        rules="required"
-                        label="{{ __('halkode::app.resources.form.card_holder_name') }}"
-                        placeholder="{{ __('halkode::app.resources.form.card_holder_name_placeholder') }}"
+                            type="text"
+                            class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                            name="cc_holder_name"
+                            rules="required"
+                            label="{{ __('halkode::app.resources.form.card_holder_name') }}"
+                            placeholder="{{ __('halkode::app.resources.form.card_holder_name_placeholder') }}"
                     />
 
                     <x-shop::form.control-group.error control-name="cc_holder_name" />
@@ -68,13 +68,13 @@
 
                 <div class="mb-5">
                     <x-shop::form.control-group.control
-                        type="text"
-                        class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
-                        name="cc_no"
-                        rules="required"
-                        label="{{ __('halkode::app.resources.form.card_number') }}"
-                        placeholder="{{ __('halkode::app.resources.form.card_number') }}"
-                        maxlength="16"
+                            type="text"
+                            class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                            name="cc_no"
+                            rules="required"
+                            label="{{ __('halkode::app.resources.form.card_number') }}"
+                            placeholder="{{ __('halkode::app.resources.form.card_number') }}"
+                            maxlength="16"
                     />
 
                     <x-shop::form.control-group.error control-name="cc_no" />
@@ -84,14 +84,14 @@
                     <div class="flex gap-2">
                         <div>
                             <x-shop::form.control-group.control
-                                type="text"
-                                class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
-                                name="expiry_month"
-                                rules="required"
-                                label="{{ __('halkode::app.resources.form.expiry_month') }}"
-                                placeholder="{{ __('halkode::app.resources.form.expiry_month_placeholder') }}"
-                                maxlength="2"
-                                inputmode="numeric"
+                                    type="text"
+                                    class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                                    name="expiry_month"
+                                    rules="required"
+                                    label="{{ __('halkode::app.resources.form.expiry_month') }}"
+                                    placeholder="{{ __('halkode::app.resources.form.expiry_month_placeholder') }}"
+                                    maxlength="2"
+                                    inputmode="numeric"
                             />
 
                             <x-shop::form.control-group.error control-name="expiry_month" />
@@ -99,14 +99,14 @@
 
                         <div>
                             <x-shop::form.control-group.control
-                                type="text"
-                                class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
-                                name="expiry_year"
-                                rules="required"
-                                label="{{ __('halkode::app.resources.form.expiry_year') }}"
-                                placeholder="{{ __('halkode::app.resources.form.expiry_year_placeholder') }}"
-                                maxlength="2"
-                                inputmode="numeric"
+                                    type="text"
+                                    class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                                    name="expiry_year"
+                                    rules="required"
+                                    label="{{ __('halkode::app.resources.form.expiry_year') }}"
+                                    placeholder="{{ __('halkode::app.resources.form.expiry_year_placeholder') }}"
+                                    maxlength="2"
+                                    inputmode="numeric"
                             />
 
                             <x-shop::form.control-group.error control-name="expiry_year" />
@@ -114,14 +114,14 @@
 
                         <div>
                             <x-shop::form.control-group.control
-                                type="text"
-                                class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
-                                name="cvv"
-                                rules="required"
-                                label="{{ __('halkode::app.resources.form.cvv') }}"
-                                placeholder="{{ __('halkode::app.resources.form.cvv') }}"
-                                maxlength="3"
-                                inputmode="numeric"
+                                    type="password"
+                                    class="block w-[420px] max-w-full rounded-xl border-2 px-5 py-4 text-base max-1060:w-full max-md:p-3.5 max-sm:mb-5 max-sm:rounded-lg max-sm:border-2 max-sm:p-2 max-sm:text-sm"
+                                    name="cvv"
+                                    rules="required"
+                                    label="{{ __('halkode::app.resources.form.cvv') }}"
+                                    placeholder="{{ __('halkode::app.resources.form.cvv') }}"
+                                    maxlength="3"
+                                    inputmode="numeric"
 
                             />
 
@@ -132,11 +132,11 @@
                     <div>
                         <x-shop::form.control-group>
                             <x-shop::form.control-group.control
-                                type="select"
-                                name="installments_number"
-                                rules="required"
-                                label="{{ __('halkode::app.resources.form.installment') }}"
-                                value="1"
+                                    type="select"
+                                    name="installments_number"
+                                    rules="required"
+                                    label="{{ __('halkode::app.resources.form.installment') }}"
+                                    value="1"
                             >
                                 <option value="1" selected>
                                     @lang('halkode::app.resources.form.single_payment')
@@ -149,9 +149,9 @@
                 </div>
 
                 <x-shop::button
-                    type="submit"
-                    class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
-                    :title="__('halkode::app.resources.actions.pay') . ' ' . number_format($total, 2) . ' ' . core()->getCurrentCurrencyCode()"
+                        type="submit"
+                        class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
+                        :title="__('halkode::app.resources.actions.pay') . ' ' . number_format($total, 2) . ' ' . core()->getCurrentCurrencyCode()"
 
                 />
             </x-shop::form>
@@ -166,9 +166,9 @@
 
             <div class="mt-6">
                 <img
-                    src="{{ asset('vendor/halkode/images/logo_band_colored.svg') }}"
-                    alt="Halkode"
-                    style="height: 80px; width: 220px; margin: 0 auto;"
+                        src="{{ asset('vendor/halkode/images/logo_band_colored.svg') }}"
+                        alt="Halkode"
+                        style="height: 80px; width: 220px; margin: 0 auto;"
                 />
             </div>
         </div>
