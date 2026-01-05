@@ -34,7 +34,6 @@ class PaymentController extends Controller
 
         return view('halkode::pay-smart-3d', [
             'cart'       => $cart,
-            'invoice_id' => $cart->id,
             'total'      => number_format($cart->grand_total, 2, '.', ''),
         ]);
     }

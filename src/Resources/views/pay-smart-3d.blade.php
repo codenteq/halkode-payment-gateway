@@ -50,8 +50,6 @@
                     class="space-y-4"
             >
                 @csrf
-                <input type="hidden" name="invoice_id" value="{{ $invoice_id }}">
-                <input type="hidden" name="total" value="{{ $total }}">
 
                 <div class="mb-5">
                     <x-shop::form.control-group.control
