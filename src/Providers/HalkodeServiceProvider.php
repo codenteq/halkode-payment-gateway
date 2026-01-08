@@ -26,6 +26,8 @@ class HalkodeServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'halkode');
 
         $this->publishes([__DIR__ . '/../Resources/assets' => public_path('vendor/halkode')], 'halkode-assets');
+
+        $this->app->register(EventServiceProvider::class);
     }
 
     /**

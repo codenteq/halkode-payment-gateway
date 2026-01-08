@@ -54,6 +54,14 @@ return [
                 'channel_based' => true,
                 'locale_based'  => false,
             ], [
+                'name'          => 'application_key',
+                'title'         => 'halkode::app.halkode.system.application_key',
+                'info'          => 'halkode::app.halkode.system.application_key_info',
+                'type'          => 'password',
+                'depends'       => 'active:1',
+                'channel_based' => true,
+                'locale_based'  => false,
+            ], [
                 'name'          => 'sandbox',
                 'title'         => 'Sandbox',
                 'type'          => 'boolean',

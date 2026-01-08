@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Webkul\Checkout\Facades\Cart;
 use Webkul\Halkode\Payment\Halkode;
+use Webkul\Sales\Models\OrderPayment;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use Webkul\Sales\Transformers\OrderResource;
@@ -86,6 +87,9 @@ class PaymentController extends Controller
             "cancel_url"          => route('halkode.cancel'),
         ];
 
+        session(['invoice_id' => $invoiceId]);
+        session(['installments_number' => $request->installments_number]);
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])
@@ -111,6 +115,8 @@ class PaymentController extends Controller
         $data = (new OrderResource($cart))->jsonSerialize();
 
         $order = $this->orderRepository->create($data);
+
+        $this->savePaymentOrderId($order['id']);
 
         if ($order->canInvoice()) {
             $this->invoiceRepository->create($this->prepareInvoiceData($order));
@@ -152,6 +158,23 @@ class PaymentController extends Controller
         return $invoiceData;
     }
 
+    /**
+     * Saves the payment transaction ID to the database.
+     */
+    protected function savePaymentOrderId(int $orderId): void
+    {
+        OrderPayment::where('order_id', $orderId)
+            ->update([
+                'additional' => json_encode([
+                    'invoice_id' => session('invoice_id'),
+                    'installments_number' => session('installments_number')
+                ])
+            ]);
+    }
+
+    /**
+     * Hash key created for security purposes
+     */
     protected function generateHash($total, $installment, $currency_code, $merchant_key, $invoice_id, $app_secret)
     {
         $data = $total . '|' . $installment . '|' . $currency_code . '|' . $merchant_key . '|' . $invoice_id;

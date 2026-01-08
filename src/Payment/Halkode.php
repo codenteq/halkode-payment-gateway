@@ -85,6 +85,16 @@ class Halkode extends Payment
     }
 
     /**
+     * Get application key from configuration.
+     *
+     * @return string|null
+     */
+    public function getApplicationKey(): ?string
+    {
+        return $this->getConfigData('application_key');
+    }
+
+    /**
      * Check if sandbox mode is enabled.
      *
      * @return bool
