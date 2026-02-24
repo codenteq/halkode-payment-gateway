@@ -49,10 +49,14 @@ class PaymentController extends Controller
 
         $items = $cart->items->map(fn($p) => [
             'name'        => $p->name,
-            'price'       => round($p->total_incl_tax / $p->quantity, 2),
+            'price'       => round($p->price_incl_tax - ($p->discount_amount / $p->quantity), 2),
             'quantity'    => $p->quantity,
             'description' => $p->getTypeInstance()->isStockable() ? 'PHYSICAL_GOODS' : 'DIGITAL_GOODS',
         ])->toArray();
+
+        if (empty($items)) {
+            return redirect()->route('halkode.cancel');
+        }
 
         if ($cart->shipping_amount_incl_tax > 0) {
             $items[] = [
@@ -63,8 +67,27 @@ class PaymentController extends Controller
             ];
         }
 
-        if ($diff = round($cart->grand_total - collect($items)->sum(fn($i) => $i['price'] * $i['quantity']), 2)) {
-            $items[array_key_last($items)]['price'] = round($items[array_key_last($items)]['price'] + $diff, 2);
+        $diff = round($cart->grand_total - collect($items)->sum(fn($i) => $i['price'] * $i['quantity']), 2);
+
+        if (abs($diff) > 0.10) {
+            return redirect()->route('halkode.cancel');
+        }
+
+        if (abs($diff) >= 0.01) {
+            $lastIndex = array_key_last($items);
+            $lastItem  = &$items[$lastIndex];
+            $adjustedPrice = round($lastItem['price'] + $diff, 2);
+
+            if ($lastItem['quantity'] === 1 && $adjustedPrice > 0) {
+                $lastItem['price'] = $adjustedPrice;
+            } else {
+                $items[] = [
+                    'name'        => 'Rounding Adjustment',
+                    'price'       => $diff,
+                    'quantity'    => 1,
+                    'description' => 'SERVICE',
+                ];
+            }
         }
 
         $payload = [
@@ -136,7 +159,7 @@ class PaymentController extends Controller
     {
         logger()->error(['Halk Öde payment failed or was cancelled.' => $request->query()]);
 
-        session()->flash('error', $request->query()['error']);
+        session()->flash('error', $request->query()['original_bank_error_description']);
 
         return redirect()->route('shop.checkout.cart.index');
     }
