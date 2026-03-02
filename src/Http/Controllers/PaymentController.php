@@ -159,7 +159,7 @@ class PaymentController extends Controller
     {
         logger()->error(['Halk Öde payment failed or was cancelled.' => $request->query()]);
 
-        session()->flash('error', $request->query()['original_bank_error_description']);
+        session()->flash('error', $request->query()['error']);
 
         return redirect()->route('shop.checkout.cart.index');
     }
